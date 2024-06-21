@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPA過去問練習</title>
+</head>
+
+<body>
+    <div id="LoadScreen" class="justify-content-center"
+        style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0.8; background-color: black;">
+        <div style="margin: auto; text-align: center;">
+            <h1 style="color: aliceblue; user-select: none;" class="mb-5" id="overlay_message"></h1>
+            <div class="spinner-border text-light" style="width: 8rem; height: 8rem;" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="main_content" style="overflow-y: scroll;height: 100vh; max-height: 100vh;">
+        <div class="mb-2">
+            <ul class="nav nav-tabs" id="select_tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#upload_tab" data-bs-toggle="tab">アップロード</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#fe_menjo_tab" data-bs-toggle="tab">基本情報午前免除</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tab-content">
+            <div id="upload_tab" class="tab-pane active">
+                <div class="mb-3">
+                    <div class="d-flex">
+                        <label for="pdfSelect" class="form-label">模範解答ファイルを選んでください</label>
+                        <div class="form-check mx-5">
+                            <input class="form-check-input" type="checkbox" checked id="refresh_answer_area_check">
+                            <label class="form-check-label" for="refresh_answer_area_check">
+                                回答欄を更新する
+                            </label>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <input class="form-control w-75" type="url" id="pdfUrlInput" style="display: none;">
+                        <input class="form-control w-75" type="file" id="pdfSelect" accept="application/pdf">
+                        <button type="button" id="uploadbtn" class="w-25 btn btn-primary">アップロード</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="fe_menjo_tab" class="tab-pane">
+                <select class="form-select form-select-lg mb-3" id="fe_menjo_mondai_select" aria-label=".form-select-lg example">
+                    <option selected value="-1">問題を選択してください</option>
+                </select>
+                
+                <div class="d-flex">
+                    <button type="button" id="Mondai_Load_Button" style="margin: auto; width: 45%;" class="btn btn-primary">読み込む</button>
+                    <button type="button" id="Mondai_Open_Button" style="margin: auto; width: 45%;" class="btn btn-primary">問題を開く</button>
+                </div>
+            </div>
+        </div>
+        
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 20%;">問題番号</th>
+                    <th scope="col" style="width: 50%;">かいとう</th>
+                    <th scope="col" style="width: 10%;">模範解答</th>
+                    <th scope="col" style="width: 10%; white-space: nowrap;">結果</th>
+                </tr>
+            </thead>
+            <tbody id="kaitouran">
+            </tbody>
+        </table>
+        <p id="reuslt_text" class="h3 text-center">
+
+        </p>
+        <div class="d-flex mb-3">
+            <button type="button" id="check_anser_btn" style="margin: auto; width: 45%;" class="btn btn-primary">答え合わせ</button>
+            <button type="button" id="Save_Result_Button" style="margin: auto; width: 45%;" class="btn btn-primary">結果をダウンロードする</button>
+        </div>
+        
+    </div>
+
+
+
+    <script src="./static/config.js"></script>
+    <script src="./static/js/bootstrap.js"></script>
+    <script src="./static/report.js"></script>
+    <script src="./static/main.js"></script>
+    <link rel="stylesheet" href="./static/css/bootstrap.css">
+</body>
+
+</html>
