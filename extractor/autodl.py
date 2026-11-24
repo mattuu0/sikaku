@@ -14,12 +14,7 @@ from urllib.parse import urljoin
 def extract_data(pdfio:BytesIO,page_index:int = 0) -> list:
     return_list = []
 
-    load_time = time.time()
     document = fitz.open(stream=pdfio)
-
-    print(f"Load TIme : {time.time() - load_time}")
-
-    find_time = time.time()
 
     tables = document[page_index].find_tables()
 
@@ -36,8 +31,6 @@ def extract_data(pdfio:BytesIO,page_index:int = 0) -> list:
 
                     return_list.append({"num":search_result,"ans":data[1],"type":type_data})
                 
-
-    print(f"Find Time : {time.time() - find_time}")
 
     document.close()
     return return_list
@@ -64,6 +57,19 @@ soup = BeautifulSoup(read_data,"html.parser")
 elems = soup.find_all(href=re.compile(r"(www\.ipa\.go\.jp)?/shiken/about/.*tokurei"))
 
 base_dir = "./datas"
+
+def is_target(elem):
+    parts = os.path.basename(urljoin(IPA_PAGE_URL, elem.attrs['href'])).split("_")
+    return parts[0] == "tokurei" and parts[-1].endswith(".pdf") and len(parts) > 2 and parts[1] in ("Mondai", "ans")
+
+def fmt(sec):
+    sec = int(sec)
+    return f"{sec // 60}分{sec % 60:02d}秒" if sec >= 60 else f"{sec}秒"
+
+total = sum(1 for e in elems if is_target(e))
+done = 0
+start = time.time()
+print(f"取得対象: {total} 件", flush=True)
 
 datass = {}
 for elem in elems:
@@ -127,7 +133,10 @@ for elem in elems:
 
     time.sleep(1)
 
-    print(file_name)
+    done += 1
+    elapsed = time.time() - start
+    remaining = elapsed / done * (total - done)
+    print(f"[{done}/{total}] {file_name} | 経過 {fmt(elapsed)} / 残り約 {fmt(remaining)}", flush=True)
 
 with open(os.path.join(base_dir,"config.json"),"w",encoding="utf-8") as write_config:
     json.dump(datass,write_config)

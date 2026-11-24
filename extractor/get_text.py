@@ -9,12 +9,7 @@ page_index = 1
 def extract_data(pdfio:BytesIO,page_index:int = 0) -> list:
     return_list = []
 
-    load_time = time.time()
     document = fitz.open(stream=pdfio)
-
-    print(f"Load TIme : {time.time() - load_time}")
-
-    find_time = time.time()
 
     tables = document[page_index].find_tables()
 
@@ -24,7 +19,6 @@ def extract_data(pdfio:BytesIO,page_index:int = 0) -> list:
                 first_data = str(data[0])
 
                 search_result = re.sub(r"\D","",first_data)
-                print(search_result)
                 if bool(search_result):
                     type_data = "None"
                     if len(data) == 3:
@@ -38,14 +32,19 @@ def extract_data(pdfio:BytesIO,page_index:int = 0) -> list:
                     return_list.append({"num":search_result,"ans":ans,"type":type_data})
                 
 
-    print(f"Find Time : {time.time() - find_time}")
-
     return return_list
 
 with open("./datas/config.json","r",encoding="utf-8") as read_config:
     config_data = json.load(read_config)
 
-for key in config_data.keys():
+def fmt(sec):
+    sec = int(sec)
+    return f"{sec // 60}分{sec % 60:02d}秒" if sec >= 60 else f"{sec}秒"
+
+total = len(config_data)
+start = time.time()
+
+for index, key in enumerate(config_data.keys(), 1):
     ans_path = config_data[key]["ans"]
 
     with open(ans_path,"rb") as readpdf:
@@ -54,8 +53,9 @@ for key in config_data.keys():
     bio = BytesIO(read_data)
     result = extract_data(bio,1)
 
-    if len(result) != 0:
-        print(result)
+    elapsed = time.time() - start
+    remaining = elapsed / index * (total - index)
+    print(f"[{index}/{total}] {key} 解析 {len(result)}問 | 経過 {fmt(elapsed)} / 残り約 {fmt(remaining)}", flush=True)
 
     data_path = os.path.dirname(ans_path) + "/data.json"
     write_path = "./" + os.path.basename(os.path.dirname(ans_path)) + "/data.json"
