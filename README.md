@@ -69,7 +69,7 @@ launchs の webhook は 1 deploy = 1 イメージです。次の 2 つを作成�
 | ブランチ | 動作 |
 |---|---|
 | `develop` | web / updater の 2 イメージをビルドして ghcr.io に push (タグ: `develop`, コミット SHA)。デプロイはしない |
-| `main` (リリース) | 2 イメージを push (タグ: `latest`, SHA) → web を launchs に反映 |
+| `main` (リリース) | 2 イメージを push (タグ: `latest`, SHA) → web / updater をそれぞれ launchs に反映 |
 | Pull Request | ビルドのみ (push しない) |
 
 運用: 開発は `develop` に、リリース時に `develop` → `main` をマージ。
@@ -78,7 +78,8 @@ launchs の webhook は 1 deploy = 1 イメージです。次の 2 つを作成�
 
 1. リポジトリの Settings > Secrets and variables > Actions に登録
    - `LAUNCHS_URL`: `https://www.launchs.org`
-   - `LAUNCHS_TOKEN`: launchs の「自動デプロイ(webhook)」で発行したトークン
+   - `WEB_TOKEN`: web の deploy の「自動デプロイ(webhook)」トークン
+   - `UPDATER_TOKEN`: updater の deploy の「自動デプロイ(webhook)」トークン
 2. 初回実行後、ghcr.io のパッケージ `launchs-7207b262-269e-4265-b4f8-c2d430c28ba8` と `sikaku-updater` を **Public** にする (launchs は非公開イメージを取得できない)
 
-launchs への反映は web 用の webhook のみです。updater も自動で更新したい場合は、同様の webhook をもう 1 つ `deploy` ジョブに追加してください (`needs.build.outputs.updater_image` が使えます)。
+web と updater はジョブもトークンも別々です (`build-web` → `deploy-web`、`build-updater` → `deploy-updater`)。
