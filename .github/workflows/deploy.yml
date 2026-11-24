@@ -38,7 +38,8 @@ jobs:
       - name: イメージの名前を決める
         id: image
         # ghcr.io は小文字のみ
-        run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/launchs-7207b262-269e-4265-b4f8-c2d430c28ba8" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/launchs-7207b262-269e-4265-b4f8-c2d430c28ba8" >> "$GITHUB_OUTPUT"
           echo "updater=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/sikaku-updater" >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-buildx-action@v3
