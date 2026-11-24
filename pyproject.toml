@@ -1,0 +1,25 @@
+[project]
+name = "sikaku"
+version = "0.1.0"
+description = "基本情報技術者試験 過去問 Web アプリ"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[dependency-groups]
+# 配信用イメージ
+web = [
+    "fastapi==0.109.0",
+    "uvicorn==0.27.0",
+    "python-multipart==0.0.6",
+    "PyMuPDF==1.23.17",
+]
+# 更新用イメージ
+updater = [
+    "PyMuPDF==1.23.17",
+    "requests==2.31.0",
+    "beautifulsoup4==4.12.3",
+    "CacheControl[filecache]==0.13.1",
+]
+
+[tool.uv]
+package = false

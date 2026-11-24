@@ -1,0 +1,24 @@
+services:
+  web:
+    build:
+      context: .
+      target: web
+    restart: unless-stopped
+    ports:
+      - "11188:11188"
+    volumes:
+      - datas:/app/extractor/datas:ro
+
+  # 常時起動し、起動時 + 24時間ごとに IPA から過去問を取得・解析する
+  updater:
+    build:
+      context: .
+      target: updater
+    restart: unless-stopped
+    environment:
+      UPDATE_INTERVAL_SECONDS: "86400"
+    volumes:
+      - datas:/app/extractor/datas
+
+volumes:
+  datas:

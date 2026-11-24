@@ -9,6 +9,7 @@ from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
 import fitz
 from io import BytesIO
+from urllib.parse import urljoin
 
 def extract_data(pdfio:BytesIO,page_index:int = 0) -> list:
     return_list = []
@@ -44,20 +45,29 @@ def extract_data(pdfio:BytesIO,page_index:int = 0) -> list:
 session = requests.Session()
 # sessionをラップしたcached_sessionを作る。
 # キャッシュはファイルとして .webcache ディレクトリ内に保存する。
-cached_session = CacheControl(session, cache=FileCache('.webcache'))
+cached_session = CacheControl(session, cache=FileCache('./datas/.webcache'))
 
-with open("./ipa_fe_html.html","r",encoding="utf-8") as readhtml:
-    read_data = readhtml.read()
+# 最新の一覧を IPA から取得 (失敗時は保存済み HTML にフォールバック)
+IPA_PAGE_URL = os.environ.get("IPA_PAGE_URL", "https://www.ipa.go.jp/shiken/about/menjo-fe.html")
+try:
+    page_res = session.get(IPA_PAGE_URL, timeout=30)
+    page_res.raise_for_status()
+    page_res.encoding = page_res.apparent_encoding
+    read_data = page_res.text
+except Exception as e:
+    print(f"ページ取得失敗、ローカル HTML を使用: {e}")
+    with open("./ipa_fe_html.html","r",encoding="utf-8") as readhtml:
+        read_data = readhtml.read()
 
 soup = BeautifulSoup(read_data,"html.parser")
 
-elems = soup.find_all(href=re.compile("www.ipa.go.jp/shiken/about"))
+elems = soup.find_all(href=re.compile(r"(www\.ipa\.go\.jp)?/shiken/about/.*tokurei"))
 
 base_dir = "./datas"
 
 datass = {}
 for elem in elems:
-    href = elem.attrs['href']
+    href = urljoin(IPA_PAGE_URL, elem.attrs['href'])
 
     file_name = str(href.split("/")[-1])
 

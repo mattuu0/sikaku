@@ -15,4 +15,4 @@ web/
 *.pdf
 *.7z
 report.html
-test.py
+test.py.venv/
