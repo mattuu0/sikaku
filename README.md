@@ -10,7 +10,7 @@ IPA の公開ページから過去問/解答 PDF を取得して解析する **u
 | ターゲット | ghcr.io のイメージ | 役割 |
 |---|---|---|
 | `web` | `ghcr.io/<owner>/launchs-7207b262-269e-4265-b4f8-c2d430c28ba8` | Web / API (`uvicorn`, ポート 11188) |
-| `updater` | `ghcr.io/<owner>/sikaku-updater` | 起動時 + 24時間ごとに IPA から取得・解析 (`update_loop.sh`) |
+| `updater` | `ghcr.io/<owner>/launchs-f8a14c6a-98b1-4a99-ae28-9035bb88cebf` | 起動時 + 24時間ごとに IPA から取得・解析 (`update_loop.sh`) |
 
 web と updater は **ボリュームを共有** します (updater が書き、web が読む)。
 
@@ -60,7 +60,7 @@ uv add <package>   # 依存追加 (uv.lock も更新される)
 launchs の webhook は 1 deploy = 1 イメージです。次の 2 つを作成してください。
 
 1. **web**: web イメージ、ポート 11188、ボリューム → `/app/extractor/datas`
-2. **updater**: `sikaku-updater` イメージ (コマンド指定は不要)、同じボリュームを `/app/extractor/datas` にマウント
+2. **updater**: `launchs-f8a14c6a-98b1-4a99-ae28-9035bb88cebf` イメージ (コマンド指定は不要)、同じボリュームを `/app/extractor/datas` にマウント
 
 ## CI/CD (GitHub Actions)
 
@@ -80,6 +80,6 @@ launchs の webhook は 1 deploy = 1 イメージです。次の 2 つを作成�
    - `LAUNCHS_URL`: `https://www.launchs.org`
    - `WEB_TOKEN`: web の deploy の「自動デプロイ(webhook)」トークン
    - `UPDATER_TOKEN`: updater の deploy の「自動デプロイ(webhook)」トークン
-2. 初回実行後、ghcr.io のパッケージ `launchs-7207b262-269e-4265-b4f8-c2d430c28ba8` と `sikaku-updater` を **Public** にする (launchs は非公開イメージを取得できない)
+2. 初回実行後、ghcr.io のパッケージ `launchs-7207b262-269e-4265-b4f8-c2d430c28ba8` と `launchs-f8a14c6a-98b1-4a99-ae28-9035bb88cebf` を **Public** にする (launchs は非公開イメージを取得できない)
 
 web と updater はジョブもトークンも別々です (`build-web` → `deploy-web`、`build-updater` → `deploy-updater`)。
