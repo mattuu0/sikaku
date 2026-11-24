@@ -22,35 +22,13 @@
         <div class="mb-2">
             <ul class="nav nav-tabs" id="select_tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#upload_tab" data-bs-toggle="tab">アップロード</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#fe_menjo_tab" data-bs-toggle="tab">基本情報午前免除</a>
+                    <a class="nav-link active" aria-current="page" href="#fe_menjo_tab" data-bs-toggle="tab">基本情報午前免除</a>
                 </li>
             </ul>
         </div>
 
         <div class="tab-content">
-            <div id="upload_tab" class="tab-pane active">
-                <div class="mb-3">
-                    <div class="d-flex">
-                        <label for="pdfSelect" class="form-label">模範解答ファイルを選んでください</label>
-                        <div class="form-check mx-5">
-                            <input class="form-check-input" type="checkbox" checked id="refresh_answer_area_check">
-                            <label class="form-check-label" for="refresh_answer_area_check">
-                                回答欄を更新する
-                            </label>
-                        </div>
-                    </div>
-                    <div class="d-flex">
-                        <input class="form-control w-75" type="url" id="pdfUrlInput" style="display: none;">
-                        <input class="form-control w-75" type="file" id="pdfSelect" accept="application/pdf">
-                        <button type="button" id="uploadbtn" class="w-25 btn btn-primary">アップロード</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="fe_menjo_tab" class="tab-pane">
+            <div id="fe_menjo_tab" class="tab-pane active">
                 <select class="form-select form-select-lg mb-3" id="fe_menjo_mondai_select" aria-label=".form-select-lg example">
                     <option selected value="-1">問題を選択してください</option>
                 </select>

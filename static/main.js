@@ -1,10 +1,6 @@
 //解答欄
 const kaitouran = document.getElementById("kaitouran");
 
-//PDF選択エリア
-const pdfSelect = document.getElementById("pdfSelect");
-const uploadbtn = document.getElementById("uploadbtn");
-
 //答え合わせボタン
 const check_anser_btn = document.getElementById("check_anser_btn");
 
@@ -16,9 +12,6 @@ const LoadScreen = document.getElementById("LoadScreen");
 
 //メインコンテンツ
 const main_content = document.getElementById("main_content");
-
-//解答欄更新チェック
-const refresh_answer_area_check = document.getElementById("refresh_answer_area_check");
 
 //ロード中のメッセージ
 const overlay_message = document.getElementById("overlay_message");
@@ -57,30 +50,6 @@ async function wait(milsecond) {
 function noscroll(evt) {
     evt.preventDefault();
 }
-
-//アプロードボタンをクリックしたとき
-uploadbtn.addEventListener("click", async (evt) => {
-    //ロード画面を表示する
-    show_load();
-    overlay_message.innerText = "ロードしています";
-
-    try {
-        //ファイルをアップロードする
-        const updata = new FormData();
-        updata.append("file", pdfSelect.files[0]);
-
-        //アップロード
-        const req = await fetch(base_url + "/upload", { method: "POST", body: updata });
-
-        //結果を取得する
-        const pdf_list = await req.json();
-
-        //問題を表示する
-        show_mondai(pdf_list["data"], refresh_answer_area_check.checked);
-    } catch (ex) {
-        alert("エラーが発生しました");
-    }
-});
 
 //問題を表示する関数
 function show_mondai(mondai_data, clear_all) {
