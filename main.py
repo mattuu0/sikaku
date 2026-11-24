@@ -2,9 +2,10 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 import uvicorn
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse,HTMLResponse
 from starlette.middleware.cors import CORSMiddleware # 追加
-import json
+import json,re,hashlib
+from pathlib import Path
 from starlette import status
 
 #問題パス
@@ -26,9 +27,25 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+def build_index_html() -> str:
+    """static の JS/CSS の URL に内容のハッシュを付ける。
+    CDN (Cloudflare) や ブラウザに古い JS が残って、新しい HTML と食い違うのを防ぐ。"""
+    html = Path("./static/index.html").read_text(encoding="utf-8")
+
+    def add_version(m):
+        path = Path(m.group(1))
+        if not path.is_file():
+            return m.group(0)
+        digest = hashlib.md5(path.read_bytes()).hexdigest()[:10]
+        return f'"{m.group(1)}?v={digest}"'
+
+    return re.sub(r'"(\./static/[^"?]+\.(?:js|css))"', add_version, html)
+
+index_html = build_index_html()
+
 @app.get("/")
 def index():
-    return FileResponse(path="./static/index.html", media_type="text/html")
+    return HTMLResponse(index_html, headers={"Cache-Control": "no-cache"})
 
 @app.get("/ping")
 def index():
